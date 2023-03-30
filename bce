@@ -1,0 +1,45 @@
+on left click with written book:
+    if lore of event-item contains "Faster Elytra":
+        loop 5 times:
+            if lore of event-item contains "&7Level %{loop-number}%":
+                cancel event
+                send "&cThis enchantment is already applied to the item."
+                stop
+
+        add "&7Level 1" to lore of event-item
+        add "&bFaster Elytra I" to lore of event-item
+        add "&7Unbreaking I" to lore of event-item
+
+        if type of event-item is elytra:
+            add "minecraft:elytra" to can't be broken of event-item
+
+    else if lore of event-item contains "Blood Stealer":
+        loop 5 times:
+            if lore of event-item contains "&7Level %{loop-number}%":
+                cancel event
+                send "&cThis enchantment is already applied to the item."
+                stop
+
+        add "&7Level 1" to lore of event-item
+        add "&cBlood Stealer I" to lore of event-item
+        add "&7Unbreaking I" to lore of event-item
+
+    else:
+        cancel event
+        send "&cYou can only apply custom enchantments to elytra or items that already have custom enchantments."
+        
+on entity damage:
+    if attacker is a player and weapon used by attacker has lore "&cBlood Stealer I":
+        set {_level} to 0
+        loop 5 times:
+            if lore of weapon used by attacker contains "&7Level %{loop-number}%":
+                set {_level} to loop-number
+                break
+
+        if random float between 0 and 100 is less than or equal to 3 + (_level - 1) * 3:
+            set {_heal} to damage dealt * 0.15
+            if health of victim - {_heal} is less than 0:
+                set health of victim to 0
+            else:
+                set health of victim to health of victim - {_heal}
+            heal {_heal} to attacker
